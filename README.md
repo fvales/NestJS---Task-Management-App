@@ -37,6 +37,11 @@ $ yarn run test:cov
 ## PORT
 3002
 
+## Swagger
+``` bash
+http://localhost:3002/api/
+```
+
 ## Endpoints
 
 ### Get all tasks
