@@ -9,8 +9,8 @@ $ yarn install
 ```
 
 ## Other tools to be installed
-Docker
-PGAdmin
+- Docker
+- PGAdmin
 
 ### Run Postgres service in a Docker container
 ```bash
