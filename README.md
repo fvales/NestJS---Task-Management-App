@@ -8,6 +8,24 @@
 $ yarn install
 ```
 
+## Other tools to be installed
+Docker
+PGAdmin
+
+### Run Postgres service in a Docker container
+```bash
+docker run --name postgres-nest -p 5432:5432 -e POSTGRES_PASSWORD=postgres -d postgres
+```
+
+### Setting up Postgres database
+- Open PGAdmin, Create a new server
+- In the General Tab, add name as "Nest Js"
+- In the connection tab, add host as "localhost" and password "postgres"
+- Click on "Save"
+- Click on NestJs under "Servers"
+- Go to Databases and click on create new database
+- In the General Tab, add database name as "task-management" and save
+
 ## Running the app
 
 ```bash
