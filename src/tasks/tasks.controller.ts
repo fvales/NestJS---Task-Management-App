@@ -1,18 +1,24 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDTO } from './dto/get-tasks.dto';
 import { updateTaskStatusDTO } from './dto/update-task-status.dto';
 import { Task } from './task.entity';
 // import { Task } from './task-status.enum';
 import { TasksService } from './tasks.service';
-
+import { Logger } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { User } from 'src/auth/user.entity';
+import { GetUser } from '../auth/get-user.decorator'
 @Controller('tasks')
+@UseGuards(AuthGuard())
 export class TasksController {
+    private logger = new Logger('TasksController');
     constructor(private tasksService: TasksService) { }
 
     @Get()
-    getTasks(@Query() filterDto: GetTasksFilterDTO): Promise<Task[]> {
-        return this.tasksService.getTasks(filterDto);
+    getTasks(@Query() filterDto: GetTasksFilterDTO, @GetUser() user: User): Promise<Task[]> {
+        this.logger.verbose(`Retrieving all tasks. Filters:  ${JSON.stringify(filterDto)}`)
+        return this.tasksService.getTasks(filterDto, user);
     }
 
     // @Get()
@@ -25,8 +31,8 @@ export class TasksController {
     // }
 
     @Get('/:id')
-    getTaskById(@Param('id') id: string): Promise<Task> {
-        return this.tasksService.getTaskById(id);
+    getTaskById(@Param('id') id: string, @GetUser() user: User): Promise<Task> {
+        return this.tasksService.getTaskById(id, user);
     }
 
     // @Get('/:id')
@@ -35,8 +41,9 @@ export class TasksController {
     // }
 
     @Post()
-    createTask(@Body() createTaskDto: CreateTaskDto): Promise<Task> {
-        return this.tasksService.createTask(createTaskDto);
+    createTask(@Body() createTaskDto: CreateTaskDto, @GetUser() user: User): Promise<Task> {
+        this.logger.verbose(`Creating a new task. Data:  ${JSON.stringify(createTaskDto)}`)
+        return this.tasksService.createTask(createTaskDto, user);
     }
 
     // @Post()
@@ -45,8 +52,8 @@ export class TasksController {
     // }
 
     @Delete('/:id')
-    deleteTask(@Param('id') id: string): Promise<void> {
-        return this.tasksService.deleteTask(id);
+    deleteTask(@Param('id') id: string, @GetUser() user: User): Promise<void> {
+        return this.tasksService.deleteTask(id, user);
     }
 
     // @Delete('/:id')
@@ -55,9 +62,9 @@ export class TasksController {
     // }
 
     @Patch('/:id/status')
-    updateTaskStatus(@Param('id') id: string, @Body() updateTaskStatusDTO: updateTaskStatusDTO): Promise<Task> {
+    updateTaskStatus(@Param('id') id: string, @Body() updateTaskStatusDTO: updateTaskStatusDTO, @GetUser() user: User): Promise<Task> {
         const { status } = updateTaskStatusDTO;
-        return this.tasksService.updateTaskStatus(id, status);
+        return this.tasksService.updateTaskStatus(id, status, user);
     }
 
     // @Patch('/:id/status')
